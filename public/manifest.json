@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "The first browser-level AI prompt security shield. Detects prompt injection, jailbreak attacks, and more — in real time.",
   "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://openrouter.ai/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"

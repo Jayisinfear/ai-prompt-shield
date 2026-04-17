@@ -4,11 +4,14 @@ export default function ShieldToggle({ enabled, onToggle }) {
   return (
     <div className="shield-toggle">
       <div className="shield-status">
-        <div className={`shield-status-dot ${enabled ? 'active' : 'inactive'}`} />
-        <span className="shield-status-text">
-          Shield {enabled ? 'Active' : 'Disabled'}
-        </span>
+        <div className="shield-toggle-label">SHIELD MATRIX</div>
+        <div className="shield-toggle-desc">
+          {enabled
+            ? 'INTERCEPTING PROMPTS IN REAL-TIME'
+            : 'ALL PROMPTS PASSING THROUGH UNSCANNED'}
+        </div>
       </div>
+
       <label className="toggle-switch">
         <input
           type="checkbox"

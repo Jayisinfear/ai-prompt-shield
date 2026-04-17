@@ -1,7 +1,7 @@
 /**
- * AI Prompt Shield — Content Script
+ * AI Prompt Shield — Content Script v2.0
  * Injected into AI chatbot pages. Intercepts prompts, sends for analysis,
- * and shows a premium overlay with risk info + Allow/Block buttons.
+ * and shows a premium overlay with AI-powered risk analysis + Allow/Block buttons.
  * Self-contained (no ES module imports).
  */
 
@@ -58,7 +58,7 @@
   const platform = PLATFORMS[hostname];
   if (!platform) return;
 
-  console.log(`🛡️ AI Prompt Shield active on ${platform.name}`);
+  console.log(`🛡️ AI Prompt Shield v2.0 active on ${platform.name} (AI-Powered)`);
 
   // ─── Helpers ──────────────────────────────────────────────
   function getInputElement() {
@@ -133,12 +133,21 @@
       to { opacity: 1; transform: scale(1); }
     }
 
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     .aps-modal {
       background: linear-gradient(145deg, #0f0f1e 0%, #1a1a35 50%, #0d1b2a 100%);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 24px;
       padding: 36px 32px 28px;
-      width: 420px;
+      width: 440px;
       max-width: 92vw;
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 1px rgba(255, 255, 255, 0.1);
       animation: slideUp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -153,6 +162,66 @@
       top: 0; left: 0; right: 0;
       height: 3px;
       background: var(--risk-gradient);
+    }
+
+    /* AI Badge */
+    .aps-ai-badge {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .aps-ai-badge.ai-mode {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(167, 139, 250, 0.15));
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      color: #a78bfa;
+    }
+
+    .aps-ai-badge.regex-mode {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    .aps-ai-badge-icon {
+      font-size: 12px;
+    }
+
+    /* Loading State */
+    .aps-loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .aps-loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(255, 255, 255, 0.06);
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    .aps-loading-text {
+      font-size: 14px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .aps-loading-subtext {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 6px;
     }
 
     /* Header */
@@ -271,6 +340,101 @@
       animation: pulseGlow 2s infinite;
       box-shadow: none;
     }
+
+    /* AI Explanation */
+    .aps-ai-explanation {
+      margin: 16px 0;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.06), rgba(167, 139, 250, 0.06));
+      border: 1px solid rgba(102, 126, 234, 0.12);
+      border-radius: 14px;
+    }
+
+    .aps-ai-explanation-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .aps-ai-explanation-title {
+      font-size: 10px;
+      color: #a78bfa;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+    }
+
+    .aps-ai-explanation-text {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    /* Confidence Bar */
+    .aps-confidence {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .aps-confidence-label {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      white-space: nowrap;
+    }
+
+    .aps-confidence-bar-bg {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .aps-confidence-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #667eea, #a78bfa);
+      transition: width 0.8s ease;
+    }
+
+    .aps-confidence-value {
+      font-size: 11px;
+      color: #a78bfa;
+      font-weight: 700;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* Score Comparison */
+    .aps-score-comparison {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      justify-content: center;
+    }
+
+    .aps-score-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+    }
+
+    .aps-score-chip .chip-icon { font-size: 12px; }
+    .aps-score-chip .chip-value { color: #e2e8f0; font-weight: 800; }
 
     /* Attack Info */
     .aps-attack-section {
@@ -398,6 +562,120 @@
       transform: translateY(-1px);
     }
 
+    /* Rewrite Button */
+    .aps-rewrite-row {
+      margin-top: 10px;
+    }
+
+    .aps-btn-rewrite {
+      width: 100%;
+      padding: 12px 20px;
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(167, 139, 250, 0.1));
+      color: #a78bfa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s ease;
+      letter-spacing: 0.3px;
+    }
+
+    .aps-btn-rewrite:hover {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(167, 139, 250, 0.2));
+      border-color: rgba(102, 126, 234, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+    }
+
+    .aps-btn-rewrite:active {
+      transform: scale(0.97);
+    }
+
+    .aps-btn-rewrite:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    /* Rewrite Result Panel */
+    .aps-rewrite-panel {
+      margin-top: 12px;
+      padding: 16px;
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.06), rgba(102, 126, 234, 0.06));
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      border-radius: 14px;
+      animation: slideUp 0.4s ease;
+    }
+
+    .aps-rewrite-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .aps-rewrite-title {
+      font-size: 10px;
+      color: #10b981;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+    }
+
+    .aps-rewrite-prompt {
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.6;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    .aps-rewrite-explanation {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    .aps-btn-use {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .aps-btn-use:hover {
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .aps-btn-use:active {
+      transform: scale(0.97);
+    }
+
     /* Prompt Preview */
     .aps-prompt-preview {
       margin-top: 16px;
@@ -419,6 +697,25 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    .aps-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 10px;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .aps-footer-model {
+      color: #667eea;
       font-weight: 600;
     }
 
@@ -454,9 +751,37 @@
       color: #10b981;
       font-weight: 700;
     }
+
+    .aps-toast-ai {
+      font-size: 10px;
+      color: #a78bfa;
+      font-weight: 600;
+      margin-left: 4px;
+    }
   `;
 
   // ─── Build Overlay HTML ───────────────────────────────────
+  function buildLoadingHTML() {
+    return `
+      <div class="aps-backdrop" id="aps-backdrop"
+        style="--risk-color:#667eea;--risk-gradient:linear-gradient(90deg,#667eea,#a78bfa)">
+        <div class="aps-modal">
+          <div class="aps-header">
+            <div class="aps-shield-icon">🛡️</div>
+            <div>
+              <div class="aps-title">AI Prompt Shield</div>
+              <div class="aps-subtitle">Analyzing Prompt</div>
+            </div>
+          </div>
+          <div class="aps-loading">
+            <div class="aps-loading-spinner"></div>
+            <div class="aps-loading-text">🤖 AI is analyzing your prompt...</div>
+            <div class="aps-loading-subtext">Scanning through AI model for deep threat analysis</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   function buildOverlayHTML(result, promptText) {
     const score = result.score;
     const riskLevel = result.riskLevel;
@@ -489,10 +814,61 @@
       'Payload Smuggling': '📦',
       'Multi-language Obfuscation': '🌐',
       'Emotional Manipulation': '🎭',
+      'Context Manipulation': '🔀',
+      // Content Safety categories
+      'Harmful Instructions': '☠️',
+      'Hacking & Cybercrime': '💻',
+      'Illegal Activities': '🚔',
+      'Violence & Harm': '⚠️',
+      'Self-Harm Content': '🆘',
+      'Privacy Violations': '🔍',
+      'Malware & Exploits': '🦠',
+      'Deception & Manipulation': '🎣',
       'Clean': '✅',
     };
 
     const icon = attackIcons[result.attackType] || '⚠️';
+    const isAI = result.aiPowered;
+
+    // AI Badge
+    const badgeHTML = isAI
+      ? `<div class="aps-ai-badge ai-mode"><span class="aps-ai-badge-icon">🤖</span> AI Powered</div>`
+      : `<div class="aps-ai-badge regex-mode"><span class="aps-ai-badge-icon">⚡</span> Regex Mode</div>`;
+
+    // AI Explanation Section
+    let aiExplanationHTML = '';
+    if (isAI && result.aiExplanation) {
+      const confidencePct = Math.round((result.aiConfidence || 0) * 100);
+      aiExplanationHTML = `
+        <div class="aps-ai-explanation">
+          <div class="aps-ai-explanation-header">
+            <span>🤖</span>
+            <span class="aps-ai-explanation-title">AI Analysis</span>
+          </div>
+          <div class="aps-ai-explanation-text">${escapeHTML(result.aiExplanation)}</div>
+          <div class="aps-confidence">
+            <span class="aps-confidence-label">Confidence</span>
+            <div class="aps-confidence-bar-bg">
+              <div class="aps-confidence-bar-fill" style="width: ${confidencePct}%"></div>
+            </div>
+            <span class="aps-confidence-value">${confidencePct}%</span>
+          </div>
+        </div>`;
+    }
+
+    // Score comparison (AI vs Regex)
+    let scoreComparisonHTML = '';
+    if (isAI && result.regexScore !== undefined) {
+      scoreComparisonHTML = `
+        <div class="aps-score-comparison">
+          <div class="aps-score-chip">
+            <span class="chip-icon">🤖</span> AI: <span class="chip-value">${result.aiScore}</span>
+          </div>
+          <div class="aps-score-chip">
+            <span class="chip-icon">⚡</span> Regex: <span class="chip-value">${result.regexScore}</span>
+          </div>
+        </div>`;
+    }
 
     let patternsHTML = '';
     if (result.details && result.details.length > 0) {
@@ -510,10 +886,16 @@
         </div>`;
     }
 
+    // Footer
+    const footerHTML = isAI
+      ? `<div class="aps-footer">Powered by <span class="aps-footer-model">OpenRouter AI</span> • Hybrid AI + Regex Analysis</div>`
+      : `<div class="aps-footer">Regex Pattern Analysis • AI unavailable</div>`;
+
     return `
       <div class="aps-backdrop" id="aps-backdrop"
         style="--risk-color:${rc.color};--risk-bg:${rc.bg};--risk-border:${rc.border};--risk-gradient:${rc.gradient};--dash-array:${circumference};--dash-offset:${offset}">
         <div class="aps-modal">
+          ${badgeHTML}
           <div class="aps-header">
             <div class="aps-shield-icon">🛡️</div>
             <div>
@@ -537,7 +919,10 @@
               <span class="aps-risk-dot"></span>
               ${riskLevel} Risk
             </div>
+            ${scoreComparisonHTML}
           </div>
+
+          ${aiExplanationHTML}
 
           <div class="aps-attack-section">
             <div class="aps-attack-type">
@@ -559,6 +944,13 @@
             <button class="aps-btn aps-btn-allow" id="aps-allow">✅ Allow</button>
             <button class="aps-btn aps-btn-block" id="aps-block">🚫 Block</button>
           </div>
+
+          ${score >= 20 ? `<div class="aps-rewrite-row">
+            <button class="aps-btn-rewrite" id="aps-rewrite">✨ Suggest Safe Version</button>
+            <div id="aps-rewrite-result"></div>
+          </div>` : ''}
+
+          ${footerHTML}
         </div>
       </div>`;
   }
@@ -569,7 +961,26 @@
     return div.innerHTML;
   }
 
-  // ─── Show Overlay ─────────────────────────────────────────
+  // ─── Show Loading Overlay ─────────────────────────────────
+  function showLoadingOverlay() {
+    removeOverlay();
+
+    overlayHost = document.createElement('aps-shield-overlay');
+    overlayHost.style.cssText = 'position:fixed;inset:0;z-index:2147483647;pointer-events:auto;';
+    const shadow = overlayHost.attachShadow({ mode: 'closed' });
+
+    const styleEl = document.createElement('style');
+    styleEl.textContent = OVERLAY_CSS;
+    shadow.appendChild(styleEl);
+
+    const container = document.createElement('div');
+    container.innerHTML = buildLoadingHTML();
+    shadow.appendChild(container);
+
+    document.documentElement.appendChild(overlayHost);
+  }
+
+  // ─── Show Result Overlay ──────────────────────────────────
   function showOverlay(result, promptText, inputEl) {
     removeOverlay();
     pendingInputEl = inputEl;
@@ -591,6 +1002,8 @@
     // Button handlers
     const allowBtn = shadow.getElementById('aps-allow');
     const blockBtn = shadow.getElementById('aps-block');
+    const rewriteBtn = shadow.getElementById('aps-rewrite');
+    const rewriteResultDiv = shadow.getElementById('aps-rewrite-result');
 
     if (allowBtn) {
       allowBtn.addEventListener('click', () => {
@@ -604,7 +1017,59 @@
       blockBtn.addEventListener('click', () => {
         removeOverlay();
         chrome.runtime.sendMessage({ type: 'USER_DECISION', decision: 'block' });
-        // Don't re-submit — prompt is blocked
+      });
+    }
+
+    // Rewrite button handler
+    if (rewriteBtn && rewriteResultDiv) {
+      rewriteBtn.addEventListener('click', () => {
+        rewriteBtn.disabled = true;
+        rewriteBtn.textContent = '⏳ AI is rewriting...';
+
+        chrome.runtime.sendMessage(
+          { type: 'REWRITE_PROMPT', prompt: promptText, attackType: result.attackType },
+          (response) => {
+            if (!response || response.error) {
+              rewriteBtn.textContent = '❌ Rewrite failed — try again';
+              rewriteBtn.disabled = false;
+              return;
+            }
+
+            rewriteBtn.style.display = 'none';
+
+            rewriteResultDiv.innerHTML = `
+              <div class="aps-rewrite-panel">
+                <div class="aps-rewrite-header">
+                  <span>✨</span>
+                  <span class="aps-rewrite-title">Safe Alternative</span>
+                </div>
+                <div class="aps-rewrite-prompt">${escapeHTML(response.safePrompt)}</div>
+                <div class="aps-rewrite-explanation">${escapeHTML(response.explanation)}</div>
+                <button class="aps-btn-use" id="aps-use-rewrite">✅ Use This Prompt</button>
+              </div>`;
+
+            // "Use This" button — replaces input and submits
+            const useBtn = shadow.getElementById('aps-use-rewrite');
+            if (useBtn) {
+              useBtn.addEventListener('click', () => {
+                // Replace the input text with the safe version
+                if (inputEl) {
+                  if (inputEl.tagName === 'TEXTAREA' || inputEl.tagName === 'INPUT') {
+                    inputEl.value = response.safePrompt;
+                    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                  } else {
+                    // contenteditable div
+                    inputEl.innerText = response.safePrompt;
+                    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                  }
+                }
+                removeOverlay();
+                chrome.runtime.sendMessage({ type: 'USER_DECISION', decision: 'allow' });
+                // Allow user to review then send manually
+              });
+            }
+          }
+        );
       });
     }
 
@@ -621,7 +1086,7 @@
   }
 
   // ─── Show Toast (for clean prompts) ───────────────────────
-  function showCleanToast(score) {
+  function showCleanToast(score, isAI) {
     const toastHost = document.createElement('aps-shield-toast');
     toastHost.style.cssText = 'position:fixed;z-index:2147483647;pointer-events:none;bottom:0;right:0;';
     const shadow = toastHost.attachShadow({ mode: 'closed' });
@@ -632,9 +1097,10 @@
 
     const toast = document.createElement('div');
     toast.className = 'aps-toast';
+    const aiLabel = isAI ? `<span class="aps-toast-ai">🤖 AI</span>` : '';
     toast.innerHTML = `
       <span class="aps-toast-icon">🛡️</span>
-      <span>Prompt scanned — <span class="aps-toast-score">Safe (${score}/100)</span></span>
+      <span>Prompt scanned — <span class="aps-toast-score">Safe (${score}/100)</span>${aiLabel}</span>
     `;
     shadow.appendChild(toast);
 
@@ -680,26 +1146,32 @@
 
   // ─── Analyze Prompt ───────────────────────────────────────
   function analyzePrompt(text, inputEl) {
+    // Show loading overlay while AI analyzes
+    showLoadingOverlay();
+
     chrome.runtime.sendMessage(
       { type: 'ANALYZE_PROMPT', prompt: text },
       (response) => {
         if (chrome.runtime.lastError) {
           console.error('🛡️ Shield error:', chrome.runtime.lastError);
+          removeOverlay();
           allowSubmission(inputEl);
           return;
         }
 
         if (!response) {
+          removeOverlay();
           allowSubmission(inputEl);
           return;
         }
 
         if (response.score >= 20) {
-          // Risky — show overlay
+          // Risky — show result overlay
           showOverlay(response, text, inputEl);
         } else {
           // Clean — auto-allow with toast
-          showCleanToast(response.score);
+          removeOverlay();
+          showCleanToast(response.score, response.aiPowered);
           allowSubmission(inputEl);
         }
       }
@@ -774,6 +1246,11 @@
         allowSubmission(pendingInputEl);
       }
       removeOverlay();
+    }
+
+    // AI result arrived (update overlay if still showing loading)
+    if (msg.type === 'AI_RESULT') {
+      // This is handled in the ANALYZE_PROMPT callback
     }
   });
 

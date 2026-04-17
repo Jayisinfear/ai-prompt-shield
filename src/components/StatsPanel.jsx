@@ -4,16 +4,18 @@ export default function StatsPanel({ stats }) {
   return (
     <div className="stats-panel">
       <div className="stat-card">
-        <div className="stat-value scanned">{stats.scanned}</div>
-        <div className="stat-label">Scanned</div>
+        <span className="stat-value scanned">{stats.scanned}</span>
+        <span className="stat-label">SCANNED</span>
       </div>
+
       <div className="stat-card">
-        <div className="stat-value blocked">{stats.blocked}</div>
-        <div className="stat-label">Blocked</div>
+        <span className="stat-value blocked">{stats.blocked}</span>
+        <span className="stat-label">BLOCKED</span>
       </div>
+
       <div className="stat-card">
-        <div className="stat-value allowed">{stats.allowed}</div>
-        <div className="stat-label">Allowed</div>
+        <span className="stat-value allowed">{stats.allowed}</span>
+        <span className="stat-label">ALLOWED</span>
       </div>
     </div>
   );
