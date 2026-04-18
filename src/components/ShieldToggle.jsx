@@ -4,11 +4,11 @@ export default function ShieldToggle({ enabled, onToggle }) {
   return (
     <div className="shield-toggle">
       <div className="shield-status">
-        <div className="shield-toggle-label">SHIELD MATRIX</div>
+        <div className="shield-toggle-label">Shield Protection</div>
         <div className="shield-toggle-desc">
           {enabled
-            ? 'INTERCEPTING PROMPTS IN REAL-TIME'
-            : 'ALL PROMPTS PASSING THROUGH UNSCANNED'}
+            ? 'Scanning all prompts in real-time'
+            : 'All prompts passing through unscanned'}
         </div>
       </div>
 

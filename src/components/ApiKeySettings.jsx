@@ -57,7 +57,7 @@ export default function ApiKeySettings() {
   function handleTest() {
     const keyToTest = apiKey.trim() || null;
     if (!keyToTest) {
-      setTestResult({ valid: false, message: 'ENTER AN API KEY FIRST' });
+      setTestResult({ valid: false, message: 'Enter an API key first' });
       return;
     }
 
@@ -71,7 +71,7 @@ export default function ApiKeySettings() {
       });
     } else {
       setTimeout(() => {
-        setTestResult({ valid: true, message: 'API KEY VALIDATED ✓' });
+        setTestResult({ valid: true, message: 'API key validated ✓' });
         setTesting(false);
       }, 1500);
     }
@@ -84,12 +84,12 @@ export default function ApiKeySettings() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="settings-toggle-left">
-          <span className="settings-icon">⚙</span>
-          <span className="settings-toggle-text">AI ENGINE CONFIG</span>
+          <span className="settings-icon">⚙️</span>
+          <span className="settings-toggle-text">AI Engine Settings</span>
         </div>
         <div className="settings-toggle-right">
           <span className={`settings-status-badge ${hasKey ? 'connected' : 'disconnected'}`}>
-            {hasKey ? '● AI ONLINE' : '○ REGEX ONLY'}
+            {hasKey ? '● AI Online' : '○ Regex Only'}
           </span>
           <span className={`settings-chevron ${isOpen ? 'open' : ''}`}>›</span>
         </div>
@@ -98,12 +98,12 @@ export default function ApiKeySettings() {
       {isOpen && (
         <div className="settings-panel">
           <div className="settings-info">
-            Uses <strong>OpenRouter API</strong> for deep AI-powered threat analysis on intercepted prompts.
+            Uses <strong>OpenRouter API</strong> to access Gemini 2.5 Flash for deep AI-powered threat analysis.
           </div>
 
           {hasKey && preview && (
             <div className="settings-current-key">
-              <span className="settings-key-label">ACTIVE_KEY</span>
+              <span className="settings-key-label">Active Key</span>
               <span className="settings-key-value">{preview}</span>
             </div>
           )}
@@ -125,14 +125,14 @@ export default function ApiKeySettings() {
               onClick={handleTest}
               disabled={testing || !apiKey.trim()}
             >
-              {testing ? '⟳ TESTING...' : '▶ TEST'}
+              {testing ? 'Testing...' : '▶ Test'}
             </button>
             <button
               className="settings-btn settings-btn-save"
               onClick={handleSave}
               disabled={saving || !apiKey.trim()}
             >
-              {saving ? '⟳ SAVING...' : '✓ SAVE KEY'}
+              {saving ? 'Saving...' : '✓ Save Key'}
             </button>
           </div>
 

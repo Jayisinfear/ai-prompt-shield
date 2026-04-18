@@ -21,21 +21,20 @@ function levelClass(score) {
 export default function ScanHistory({ history, onClear }) {
   return (
     <div className="history-section">
-      {/* Header */}
       <div className="history-header">
-        <span className="history-title">RECENT_SCANS.LOG</span>
+        <span className="history-title">Recent Scans</span>
         {history.length > 0 && (
           <button className="history-clear" onClick={onClear}>
-            CLR
+            Clear
           </button>
         )}
       </div>
 
       {history.length === 0 ? (
         <div className="history-empty">
-          <div className="history-empty-icon">⟳</div>
+          <div className="history-empty-icon">🔍</div>
           <div className="history-empty-text">
-            NO SCANS RECORDED — VISIT AN AI CHATBOT TO START
+            No scans yet — visit an AI chatbot to start
           </div>
         </div>
       ) : (
@@ -47,12 +46,10 @@ export default function ScanHistory({ history, onClear }) {
 
             return (
               <div className="history-item" key={i}>
-                {/* Score number */}
                 <div className={`history-score ${level}`}>
                   {item.score}
                 </div>
 
-                {/* Vertical bar */}
                 <div className="history-bar-track">
                   <div
                     className={`history-bar-fill ${level}`}
@@ -60,7 +57,6 @@ export default function ScanHistory({ history, onClear }) {
                   />
                 </div>
 
-                {/* Info */}
                 <div className="history-info">
                   <div className="history-prompt">{item.prompt}</div>
                   <div className="history-meta">

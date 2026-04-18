@@ -179,7 +179,7 @@ export default function App() {
       {/* Footer */}
       <div className="app-footer">
         <span>AI PROMPT SHIELD v2.0</span>
-        <span>TEAM ANTI GRAVITY</span>
+        <span>Team Ligma</span>
       </div>
     </div>
   );

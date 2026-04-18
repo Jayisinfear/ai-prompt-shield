@@ -1,79 +1,63 @@
 import React from 'react';
 
 const TICKER_ITEMS = [
-  { text: 'SYS: ALL SYSTEMS NOMINAL',                    cls: '' },
-  { text: 'ALERT: JAILBREAK PATTERN DETECTED',           cls: 'alert' },
-  { text: 'SCAN #047 COMPLETE — CLEAN',                  cls: '' },
-  { text: 'WARN: ROLE HIJACKING ATTEMPT BLOCKED',        cls: 'warn' },
-  { text: 'PATTERN DB: 300+ MATCHERS LOADED',            cls: '' },
-  { text: 'PLATFORMS MONITORED: 7',                      cls: '' },
-  { text: 'CRITICAL: PROMPT INJECTION — SCORE 92',       cls: 'alert' },
-  { text: 'ENTROPY ANALYSER: ONLINE',                    cls: '' },
+  { text: '✓ All systems online',                   cls: '' },
+  { text: '⚠ Jailbreak pattern detected',           cls: 'alert' },
+  { text: '✓ Scan #047 — Clean',                    cls: '' },
+  { text: '⚠ Role hijacking attempt blocked',       cls: 'warn' },
+  { text: '✓ Pattern DB: 300+ loaded',              cls: '' },
+  { text: '✓ Monitoring 7 platforms',                cls: '' },
+  { text: '✕ Prompt injection — Score 92',           cls: 'alert' },
+  { text: '✓ AI Auditor: Online',                    cls: '' },
 ];
 
 export default function Header({ shieldEnabled }) {
   return (
     <>
-      {/* ── Main header bar ── */}
       <div className="header">
-        <div className="header-corner" />
-        <div className="header-corner-br" />
-
         <div className="header-top">
-          {/* Shield SVG icon */}
+          {/* Shield icon */}
           <div className="shield-icon-wrap">
-            <svg viewBox="0 0 44 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                d="M22 2L4 9v14c0 11.1 7.6 21.5 18 24 10.4-2.5 18-12.9 18-24V9L22 2z"
-                fill="rgba(0,255,157,0.08)"
-                stroke="#00ff9d"
+                d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6L12 2z"
+                fill="rgba(255,255,255,0.15)"
+                stroke="#fff"
                 strokeWidth="1.5"
               />
               <path
-                d="M22 8L8 14v9c0 7.5 5.1 14.5 12.2 16.2l1.8.4 1.8-.4C31 37.5 36 30.5 36 23v-9L22 8z"
-                fill="rgba(0,255,157,0.06)"
-                stroke="rgba(0,255,157,0.4)"
-                strokeWidth="0.8"
-              />
-              <path
-                d="M14 24l5 5 11-11"
-                stroke="#00ff9d"
+                d="M8 12.5l3 3 5-6"
+                stroke="#fff"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <circle cx="22" cy="25" r="1.5" fill="rgba(0,212,255,0.4)" />
             </svg>
           </div>
 
           <div className="header-titles">
             <div className="header-title">
-              AI{' '}
-              <span className="glitch accent" data-text="PROMPT">
-                PROMPT
-              </span>{' '}
-              SHIELD
+              AI Prompt Shield
             </div>
-            <div className="header-subtitle">BROWSER-LEVEL THREAT INTERCEPTOR</div>
+            <div className="header-subtitle">Real-time threat detection</div>
           </div>
 
-          <div className="version-badge">V1.0</div>
+          <div className="version-badge">v2.0</div>
         </div>
 
         {/* Status bar */}
         <div className="status-bar">
           <div className={`status-dot${shieldEnabled ? '' : ' off'}`} />
           <span className="status-text">
-            {shieldEnabled ? 'SHIELD ACTIVE' : 'SHIELD OFFLINE'}
+            {shieldEnabled ? 'Shield Active' : 'Shield Offline'}
           </span>
-          <span className="status-ping">MONITORING 7 PLATFORMS</span>
+          <span className="status-ping">7 platforms</span>
         </div>
       </div>
 
-      {/* ── Scrolling ticker ── */}
+      {/* Scrolling ticker */}
       <div className="ticker-wrap">
         <div className="ticker">
-          {/* Doubled so the loop is seamless */}
           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
             <span key={i} className={`ticker-item${item.cls ? ' ' + item.cls : ''}`}>
               {item.text}

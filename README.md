@@ -190,7 +190,7 @@ The extension uses [OpenRouter](https://openrouter.ai/) to access Google Gemini 
 
 ## 👥 Team
 
-**Team Anti Gravity**
+**Team Ligma**
 
 ---
 
